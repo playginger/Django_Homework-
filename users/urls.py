@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from .apps import UsersConfig
-from .views import WellViewSet, LessonAPIView, LessonDetailAPIView
+from .views import WellViewSet, LessonAPIView, LessonDetailAPIView, PaymentListAPIView
 
 app_name = UsersConfig.name
 
@@ -13,4 +13,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('lessons/', LessonAPIView.as_view(), name='lesson-list'),
     path('lessons/<int:pk>/', LessonDetailAPIView.as_view(), name='lesson-detail'),
+    # Payment
+    path('payment/', PaymentListAPIView.as_view(), name='payment')
 ]

@@ -46,3 +46,24 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = 'урок'
         verbose_name_plural = 'уроки'
+
+
+# Новая модель «Платежи»
+class Payment(models.Model):
+    payment_method_choices = [
+        ('cash', 'Наличные'),
+        ('transfer', 'Перевод на счет'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    payment_date = models.DateField()
+    paid_course_or_lesson = models.CharField(max_length=100)
+    payment_amount = models.DecimalField(max_digits=8, decimal_places=2)
+    payment_method = models.CharField(max_length=100, choices=payment_method_choices)
+
+    def __str__(self):
+        return f'{self.user}, {self.paid_course_or_lesson}, {self.payment_amount}'
+
+    class Meta:
+        verbose_name = 'платеж'
+        verbose_name_plural = 'платежи'
