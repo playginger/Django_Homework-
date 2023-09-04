@@ -1,12 +1,13 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from rest_framework import routers
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .apps import UsersConfig
 from .views import WellViewSet, LessonAPIView, LessonDetailAPIView, PaymentListAPIView
 
 app_name = UsersConfig.name
 
-router = DefaultRouter()
+router = routers.DefaultRouter()
 router.register(r'wells', WellViewSet)
 
 urlpatterns = [
@@ -14,5 +15,8 @@ urlpatterns = [
     path('lessons/', LessonAPIView.as_view(), name='lesson-list'),
     path('lessons/<int:pk>/', LessonDetailAPIView.as_view(), name='lesson-detail'),
     # Payment
-    path('payment/', PaymentListAPIView.as_view(), name='payment')
+    path('payment/', PaymentListAPIView.as_view(), name='payment'),
+    # маршрут для эндпоинта получения токена
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

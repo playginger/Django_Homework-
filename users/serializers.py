@@ -26,4 +26,3 @@ class PaymentSerializer(serializers.ModelSerializer):
         filter_set_class = PaymentFilter
 
 
-
