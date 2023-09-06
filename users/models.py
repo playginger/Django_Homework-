@@ -25,6 +25,7 @@ class Well(models.Model):
     title = models.CharField(max_length=200, verbose_name='название')
     img = models.ImageField(verbose_name='превью', **NULLABLE)
     description = models.TextField(verbose_name='описание')
+    subscriptions = models.ManyToManyField(User, through='Subscription')
 
     def __str__(self):
         return f'{self.title}'
@@ -67,3 +68,10 @@ class Payment(models.Model):
     class Meta:
         verbose_name = 'платеж'
         verbose_name_plural = 'платежи'
+
+
+# Новая модель `Subscription`
+class Subscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Well, on_delete=models.CASCADE)
+    subscribed = models.BooleanField(default=False)

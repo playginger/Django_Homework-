@@ -1,9 +1,11 @@
 from rest_framework import viewsets, generics, filters, permissions
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from .filters import PaymentFilter
-from .models import Well, Lesson, Payment
-from .serializers import WellSerializer, LessonSerializer, PaymentSerializer
+from .models import Well, Lesson, Payment, Subscription
+from .serializers import WellSerializer, LessonSerializer, PaymentSerializer, CoursesPagination
 
 
 class IsOwnerOrModerator(permissions.BasePermission):
@@ -16,10 +18,26 @@ class IsOwnerOrModerator(permissions.BasePermission):
         return request.user.groups.filter(name='Модераторы').exists()
 
 
+# Представления `WellViewSet`, чтобы добавить эндпоинты для установки и удаления подписки.
 class WellViewSet(viewsets.ModelViewSet):
     queryset = Well.objects.all()
     serializer_class = WellSerializer
     permission_classes = [IsOwnerOrModerator]
+    pagination_class = CoursesPagination
+
+    # Эндпоинт для установки подписки
+    @action(detail=True, methods=['post'])
+    def subscribe(self, request, pk=None):
+        well = self.get_object()
+        Subscription.objects.create(user=request.user, course=well, subscribed=True)
+        return Response({"detail": "Подписка успешно добавлена."})
+
+    # Эндпоинт для удаления подписки
+    @action(detail=True, methods=['post'])
+    def unsubscribe(self, request, pk=None):
+        well = self.get_object()
+        Subscription.objects.filter(user=request.user, course=well).delete()
+        return Response({"detail": "Подписка успешно удалена."})
 
 
 class LessonAPIView(generics.ListCreateAPIView):
