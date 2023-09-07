@@ -12,8 +12,8 @@ router.register(r'wells', WellViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('lessons/', LessonAPIView.as_view(), name='lesson-list'),
-    path('lessons/<int:pk>/', LessonDetailAPIView.as_view(), name='lesson-detail'),
+    path('api/lessons/', LessonAPIView.as_view(), name='lesson-list'),
+    path('api/lessons/<int:pk>/', LessonDetailAPIView.as_view(), name='lesson-detail'),
     # Payment
     path('payment/', PaymentListAPIView.as_view(), name='payment'),
     # маршрут для эндпоинта получения токена
