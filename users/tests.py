@@ -1,5 +1,5 @@
 from django.test import TestCase
-from rest_framework.test import APIClient
+
 from .models import Lesson, Well, Subscription
 from django.contrib.auth.models import User
 
@@ -22,7 +22,7 @@ class SubscriptionTest(TestCase):
         user.save()
 
         self.user = user
-        self.course = Well.objects.create(title='Test Course')
+        self.course = Well.objects.create(title='Test Well')
 
     def test_create_lesson(self):
         response = self.client.post('/api/lessons/', {'title': 'Test Lesson', 'course': self.course.id})
