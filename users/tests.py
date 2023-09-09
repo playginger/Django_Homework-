@@ -6,7 +6,6 @@ from users.models import User
 
 class SubscriptionTest(TestCase):
     def setUp(self):
-
         user = User.objects.create(
             email='admin@sky.pro',
             first_name='Admin',
@@ -15,14 +14,11 @@ class SubscriptionTest(TestCase):
             is_superuser=True,
             telephone='800885544666',
             city='United',
-
         )
-
         user.set_password('123qwe456rty')
         user.save()
-
         self.user = user
-        self.course = Well.objects.create(title='Test Well')
+        self.course = Well.objects.create(title='Test Course')
 
     def test_create_lesson(self):
         response = self.client.post('/api/lessons/', {'title': 'Test Lesson', 'course': self.course.id})
@@ -42,31 +38,19 @@ class SubscriptionTest(TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Lesson.objects.filter(id=lesson.id).exists())
 
-
-class SubscriptionTest(TestCase):
-    def setUp(self):
-
-        self.user = User.objects.create(
-            email='admin@sky.pro',
-            first_name='Admin',
-            last_name='SkyPro',
-            is_staff=True,
-            is_superuser=True,
-            telephone='800885544666',
-            city='United',
-
-        )
-        self.course = Well.objects.create(title='Test Course')
-
     def test_subscribe_to_course(self):
         self.client.force_login(self.user)
-        response = self.client.post(f'/api/courses/{self.course.id}/subscribe/')
+        response = self.client.post(
+            f'/api/lessons/{self.course.id}/subscribe/'
+        )
         self.assertEqual(response.status_code, 200)
         self.assertTrue(Subscription.objects.filter(user=self.user, course=self.course, subscribed=True).exists())
 
     def test_unsubscribe_to_course(self):
         subscription = Subscription.objects.create(user=self.user, course=self.course, subscribed=True)
         self.client.force_login(self.user)
-        response = self.client.post(f'/api/courses/{self.course.id}/unsubscribe/')
+        response = self.client.post(
+            f'/api/lessons/{self.course.id}/unsubscribe/'
+        )
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Subscription.objects.filter(id=subscription.id, subscribed=True).exists())
