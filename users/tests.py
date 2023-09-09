@@ -41,6 +41,7 @@ class SubscriptionTest(TestCase):
         lesson = Lesson.objects.create(title='Test Lesson', description=self.course)
         response = self.client.delete(f'/api/lessons/{lesson.id}/')
         self.assertEqual(response.status_code, 204)
+
         # self.assertFalse(Lesson.objects.filter(id=lesson.id).exists())
 
     def test_subscribe_to_course(self):
@@ -48,6 +49,7 @@ class SubscriptionTest(TestCase):
         response = self.client.post(
             f'/api/lessons/{self.course.id}/subscribe/'
         )
+
         self.assertEqual(response.status_code, 200)
         # self.assertTrue(Subscription.objects.filter(user=self.user, course=self.course, subscribed=True).exists())
 
@@ -58,5 +60,6 @@ class SubscriptionTest(TestCase):
         response = self.client.post(
             f'/api/lessons/{self.course.id}/unsubscribe/'
         )
+
         self.assertEqual(response.status_code, 200)
         # self.assertFalse(Subscription.objects.filter(id=subscription.id, subscribed=True).exists())
