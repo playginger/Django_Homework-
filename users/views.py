@@ -1,6 +1,6 @@
 from rest_framework import viewsets, generics, filters, permissions
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
 from .filters import PaymentFilter
@@ -55,7 +55,7 @@ class LessonAPIView(generics.ListCreateAPIView):
 class LessonDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [IsOwnerOrModerator]
+    permission_classes = [IsAdminUser | IsOwnerOrModerator]
 
 
 class PaymentListAPIView(generics.ListAPIView):
