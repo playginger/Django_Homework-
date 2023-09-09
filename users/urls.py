@@ -4,6 +4,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .apps import UsersConfig
 from .views import WellViewSet, LessonAPIView, LessonDetailAPIView, PaymentListAPIView
 
+
 app_name = UsersConfig.name
 
 router = routers.DefaultRouter()
