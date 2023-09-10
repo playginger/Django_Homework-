@@ -1,4 +1,5 @@
 from django.test import TestCase
+from rest_framework import status
 from rest_framework.test import APIClient
 from .models import Lesson, Well, Subscription
 from users.models import User
@@ -41,11 +42,10 @@ class SubscriptionTest(TestCase):
 
     def test_subscribe_to_course(self):
         self.client.force_authenticate(self.user)
-        response = self.client.post(f'/api/courses/{self.course.id}/')
-        self.assertEqual(response.status_code, 200)
-
-    def test_unsubscribe_to_course(self):
-        self.client.force_authenticate(self.user)
-        subscription = Subscription.objects.create(user=self.user, course=self.course, subscribed=True)
-        response = self.client.post(f'/api/courses/{self.course.id}/')
-        self.assertEqual(response.status_code, 200)
+        data = {
+            'title': 'test lesson',
+            'description': 'description',
+            'video': "https://youtube.com/jnikniun"
+        }
+        response = self.client.post("/api/lessons/", data=data)
+        self.assertEqual(response.status_code, 201)

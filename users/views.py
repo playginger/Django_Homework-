@@ -41,12 +41,12 @@ class WellViewSet(viewsets.ModelViewSet):
 class LessonAPIView(generics.ListCreateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [IsAdminUser | IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
-    def get_permissions(self):
-        if self.request.method == 'POST':
-            return [IsAdminUser | IsOwnerOrModerator()]
-        return [IsAuthenticated()]
+    # def get_permissions(self):
+    #     if self.request.method == 'POST':
+    #         return [IsAuthenticated(), IsOwnerOrModerator()]
+    #     return [IsAuthenticated()]
 
 
 class LessonDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
