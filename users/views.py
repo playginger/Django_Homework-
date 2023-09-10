@@ -25,14 +25,12 @@ class WellViewSet(viewsets.ModelViewSet):
     permission_classes = [IsOwnerOrModerator]
     pagination_class = CoursesPagination
 
-    # Эндпоинт для установки подписки
     @action(detail=True, methods=['post'])
     def subscribe(self, request, pk=None):
         well = self.get_object()
-        Subscription.objects.create(user=request.user, course=well, subscribed=True)
+        Subscription.objects.get_or_create(user=request.user, course=well, subscribed=True)
         return Response({"detail": "Подписка успешно добавлена."})
 
-    # Эндпоинт для удаления подписки
     @action(detail=True, methods=['post'])
     def unsubscribe(self, request, pk=None):
         well = self.get_object()
@@ -43,12 +41,11 @@ class WellViewSet(viewsets.ModelViewSet):
 class LessonAPIView(generics.ListCreateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser | IsAuthenticated]
 
     def get_permissions(self):
         if self.request.method == 'POST':
-            # Добавляем IsOwnerOrModerator только для создания (POST) урока
-            return [IsAuthenticated(), IsOwnerOrModerator()]
+            return [IsAdminUser | IsOwnerOrModerator()]
         return [IsAuthenticated()]
 
 
