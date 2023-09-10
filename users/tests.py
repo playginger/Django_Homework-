@@ -28,6 +28,7 @@ class SubscriptionTest(TestCase):
         response = self.client.get('/api/lessons/')
         self.assertEqual(response.status_code, 200)
 
+
     def test_list_lesson(self):
         self.client.force_authenticate(self.user)
         lesson = Lesson.objects.create(title='Test Lesson', description=self.course)

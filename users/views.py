@@ -43,6 +43,7 @@ class LessonAPIView(generics.ListCreateAPIView):
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated]
 
+
     # def get_permissions(self):
     #     if self.request.method == 'POST':
     #         return [IsAuthenticated(), IsOwnerOrModerator()]
