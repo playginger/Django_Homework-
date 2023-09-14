@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-
 from .filters import PaymentFilter
 from .models import Well, Lesson, Payment, Subscription
 
@@ -52,10 +51,15 @@ class WellSerializer(serializers.ModelSerializer):
 
 # параметр `filter_set_class`, указав созданный фильтр
 class PaymentSerializer(serializers.ModelSerializer):
+    # product = serializers.SerializerMethodField()
+
     class Meta:
         model = Payment
         fields = '__all__'
         filter_set_class = PaymentFilter
+
+    # def get_product(self, instance):
+    #     return create_product(instance.amount)
 
 
 # Сериализатор `SubscriptionSerializer`, который будет использоваться для преобразования объектов подписки.
@@ -63,4 +67,3 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
         fields = ('user', 'course', 'subscribed')
-

@@ -1,9 +1,10 @@
 from django.urls import path, include
 from rest_framework import routers
+from rest_framework.generics import RetrieveAPIView
+from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .apps import UsersConfig
 from .views import WellViewSet, LessonAPIView, LessonDetailAPIView, PaymentListAPIView
-
 
 app_name = UsersConfig.name
 
@@ -18,6 +19,7 @@ urlpatterns = [
     path('api/lessons/<int:pk>/', LessonDetailAPIView.as_view(), name='lesson-detail'),
     # Payment
     path('payment/', PaymentListAPIView.as_view(), name='payment'),
+    path('re/payment/', APIView.as_view(), name='repayment'),
     # маршрут для эндпоинта получения токена
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

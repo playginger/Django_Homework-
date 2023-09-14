@@ -1,3 +1,4 @@
+from rest_framework.views import APIView
 from rest_framework import viewsets, generics, filters, permissions
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -6,6 +7,7 @@ from rest_framework.response import Response
 from .filters import PaymentFilter
 from .models import Well, Lesson, Payment, Subscription
 from .serializers import WellSerializer, LessonSerializer, PaymentSerializer, CoursesPagination
+import stripe
 
 
 class IsOwnerOrModerator(permissions.BasePermission):
@@ -55,7 +57,7 @@ class LessonDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAdminUser | IsOwnerOrModerator]
 
 
-class PaymentListAPIView(generics.ListAPIView):
+class PaymentListAPIView(generics.ListCreateAPIView):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     filter_backends = [filters.OrderingFilter, filters.BaseFilterBackend]
@@ -64,3 +66,32 @@ class PaymentListAPIView(generics.ListAPIView):
 
     def get_permissions(self):
         return [IsOwnerOrModerator()]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            stripe.api_key = "sk_test_51Npb3MC3NzfgOcvQ4K20bPJxrjAxPvWuvOpCTMkiglAUg4CsLp4bdTrfHSyn0nij6w645h1zpEEXsJP8WbiR7cCm00AxxbQlyC"
+
+            stripe.PaymentIntent.create(
+                amount=2000,
+                currency="usd",
+                automatic_payment_methods={"enabled": True},
+            )
+
+
+class PaymentRetrieveAPIView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        # serializer = self.get_serializer(data=request.data)
+        # if serializer.is_valid():
+        stripe.api_key = "sk_test_51Npb3MC3NzfgOcvQ4K20bPJxrjAxPvWuvOpCTMkiglAUg4CsLp4bdTrfHSyn0nij6w645h1zpEEXsJP8WbiR7cCm00AxxbQlyC"
+
+        stripe.PaymentIntent.retrieve(
+            "pi_3NpbbqC3NzfgOcvQ0ULVL8Pq",
+        )
+
+    def get(self, request, *args, **kwargs):
+        pass
+
