@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from rest_framework import viewsets, generics, filters, permissions
+from rest_framework import viewsets, generics, filters, permissions, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -63,35 +63,30 @@ class PaymentListAPIView(generics.ListCreateAPIView):
     filter_backends = [filters.OrderingFilter, filters.BaseFilterBackend]
     ordering_fields = ['payment_date']
     filterset_class = PaymentFilter()
+    permission_classes = [permissions.AllowAny]
+    allowed_methods = ['GET', 'POST']
 
-    def get_permissions(self):
-        return [IsOwnerOrModerator()]
-
-    def post(self, request, *args, **kwargs):
+    def post_payment(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-
         if serializer.is_valid():
             stripe.api_key = "sk_test_51Npb3MC3NzfgOcvQ4K20bPJxrjAxPvWuvOpCTMkiglAUg4CsLp4bdTrfHSyn0nij6w645h1zpEEXsJP8WbiR7cCm00AxxbQlyC"
-
             stripe.PaymentIntent.create(
                 amount=2000,
                 currency="usd",
-                automatic_payment_methods={"enabled": True},
+                payment_method_types=["card"]
             )
+            # Действия после создания платежа
+            return self.create(request, *args, **kwargs)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PaymentRetrieveAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
+    allowed_methods = ['GET', 'POST']
 
-    def post(self, request, *args, **kwargs):
-        # serializer = self.get_serializer(data=request.data)
-        # if serializer.is_valid():
+    def post_payment(self, request, *args, **kwargs):
         stripe.api_key = "sk_test_51Npb3MC3NzfgOcvQ4K20bPJxrjAxPvWuvOpCTMkiglAUg4CsLp4bdTrfHSyn0nij6w645h1zpEEXsJP8WbiR7cCm00AxxbQlyC"
-
-        stripe.PaymentIntent.retrieve(
-            "pi_3NpbbqC3NzfgOcvQ0ULVL8Pq",
-        )
-
-    def get(self, request, *args, **kwargs):
-        pass
-
+        payment_intent = stripe.PaymentIntent.retrieve("pi_3NpbbqC3NzfgOcvQ0ULVL8Pq")
+        # Действия с полученными данными платежа
+        return Response(payment_intent)
