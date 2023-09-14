@@ -85,6 +85,7 @@ class PaymentRetrieveAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
     allowed_methods = ['GET', 'POST']
 
+
     def post_payment(self, request, *args, **kwargs):
         stripe.api_key = "sk_test_51Npb3MC3NzfgOcvQ4K20bPJxrjAxPvWuvOpCTMkiglAUg4CsLp4bdTrfHSyn0nij6w645h1zpEEXsJP8WbiR7cCm00AxxbQlyC"
         payment_intent = stripe.PaymentIntent.retrieve("pi_3NpbbqC3NzfgOcvQ0ULVL8Pq")
