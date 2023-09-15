@@ -1,7 +1,10 @@
+import stripe
 from django.test import TestCase
+from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APIClient
-from .models import Lesson, Well, Subscription
+from rest_framework.test import APIClient, APITestCase
+
+from .models import Lesson, Well
 from users.models import User
 
 
@@ -49,3 +52,37 @@ class SubscriptionTest(TestCase):
         }
         response = self.client.post("/api/lessons/", data=data)
         self.assertEqual(response.status_code, 201)
+
+
+class PaymentTestCase(APITestCase):
+
+    def test_create_payment(self, null=None):
+        stripe.api_key = "sk_test_51Npb3MC3NzfgOcvQ4K20bPJxrjAxPvWuvOpCTMkiglAUg4CsLp4bdTrfHSyn0nij6w645h1zpEEXsJP8WbiR7cCm00AxxbQlyC"
+        stripe.terminal.Reader.TestHelpers.present_payment_method("card")
+
+        payment_data = [
+            {
+                "id": "pi_3NpbbqC3NzfgOcvQ0ULVL8Pq",
+                "object": "terminal.reader",
+                "action": {
+                    "failure_code": null,
+                    "failure_message": null,
+                    "process_payment_intent": {
+                        "payment_intent": "pi_3NpbbqC3NzfgOcvQ0ULVL8Pq_secret_xxarh6PuCUIA4CQBmDS4bfJrn"
+                    }
+                },
+                "status": "succeeded",
+                "type": "process_payment_intent"
+            },
+        ]
+
+        url = reverse('payment')  # Путь 'payment' из файла urls.py
+        response = self.client.post(url, payment_data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_retrieve_payment(self):
+        stripe.api_key = "sk_test_51Npb3MC3NzfgOcvQ4K20bPJxrjAxPvWuvOpCTMkiglAUg4CsLp4bdTrfHSyn0nij6w645h1zpEEXsJP8WbiR7cCm00AxxbQlyC"
+
+        url = reverse('repayment')  # Путь 'repayment' из файла urls.py
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
