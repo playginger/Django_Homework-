@@ -147,4 +147,13 @@ CSRF_TRUSTED_ORIGINS = [
     "https://read-and-write.example.com",
 ]
 
-# STRIPE_KEY = 'sk_test_51Npb3MC3NzfgOcvQ4K20bPJxrjAxPvWuvOpCTMkiglAUg4CsLp4bdTrfHSyn0nij6w645h1zpEEXsJP8WbiR7cCm00AxxbQlyC'
+CACHE_ENABLED = True
+
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": "redis://127.0.0.1:6379",
+            "TIMEOUT": 3
+        }
+    }
