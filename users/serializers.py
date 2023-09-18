@@ -5,6 +5,8 @@ from .models import Well, Lesson, Payment, Subscription
 
 from rest_framework.pagination import PageNumberPagination
 
+from .servises.payment import create_payment
+
 
 class LessonsPagination(PageNumberPagination):
     page_size = 10
@@ -58,8 +60,14 @@ class PaymentSerializer(serializers.ModelSerializer):
         fields = '__all__'
         filter_set_class = PaymentFilter
 
-    # def get_product(self, instance):
-    #     return create_product(instance.amount)
+    def create(self, validated_data):
+        payment = Payment(
+            payment_amount=validated_data["payment_amount"],
+            payment_method=validated_data["payment_method"],
+            payment_id=create_payment(validated_data['payment_amount']),
+        )
+        payment.save()
+        return payment
 
 
 # Сериализатор `SubscriptionSerializer`, который будет использоваться для преобразования объектов подписки.

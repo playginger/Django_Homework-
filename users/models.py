@@ -61,6 +61,8 @@ class Payment(models.Model):
     paid_course_or_lesson = models.CharField(max_length=100)
     payment_amount = models.DecimalField(max_digits=8, decimal_places=2)
     payment_method = models.CharField(max_length=100, choices=payment_method_choices)
+    payment_id = models.CharField(max_length=100, verbose_name="payment_id",
+                                  **NULLABLE)
 
     def __str__(self):
         return f'{self.user}, {self.paid_course_or_lesson}, {self.payment_amount}'
