@@ -1,3 +1,4 @@
+from .tasks import send_email
 from rest_framework.views import APIView
 from rest_framework import viewsets, generics, filters, permissions, status
 from rest_framework.decorators import action
@@ -38,6 +39,10 @@ class WellViewSet(viewsets.ModelViewSet):
         well = self.get_object()
         Subscription.objects.filter(user=request.user, course=well).delete()
         return Response({"detail": "Подписка успешно удалена."})
+
+    def perform_update(self, serializer):
+        updated_well = serializer.save()
+        send_email.delay(updated_well.pk)
 
 
 class LessonAPIView(generics.ListCreateAPIView):

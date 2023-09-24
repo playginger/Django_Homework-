@@ -128,6 +128,11 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'lolliginger@mail.ru'
+EMAIL_HOST_PASSWORD = 'zYpd94k4sSatKBpmzerA'
+EMAIL_USE_SSL = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -159,3 +164,4 @@ if CACHE_ENABLED:
     }
 
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+
