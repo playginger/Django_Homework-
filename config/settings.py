@@ -82,9 +82,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'homeworkdj',  # Название БД
+        'NAME': 'postgres',  # Название БД
         'USER': 'postgres',  # Пользователь для подключения
-        'PASSWORD': '135790eeg',
+        'PASSWORD': 'mysecretpassword',
+        'HOST': 'db',
     }
 }
 
